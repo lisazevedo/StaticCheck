@@ -13,7 +13,7 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- script: dir
+- script: les passou aqui
   displayName: 'windows command'  
 
 - script: |
