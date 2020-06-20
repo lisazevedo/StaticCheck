@@ -8,7 +8,7 @@ class StreamWriter
 	public:
 		string file_name;
 		string path;
-		string extensions;
+		string extension;
 
 		string write(string file_name, string path);
 };

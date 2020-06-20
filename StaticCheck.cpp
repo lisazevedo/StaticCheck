@@ -2,6 +2,8 @@
 //
 
 #include <iostream>
+#include <string>
+
 #include "LesAnalyzer.h"
 #include "SintaxAnalyzer.h"
 #include "StreamReader.h"
@@ -10,10 +12,11 @@
 #include "SymbolTab.h"
 #include "Token.h"
 
+using namespace std;
+
 int main()
 {
-    std::cout << "Hello World!\n";
-
+    
     return 0;
 }
 
