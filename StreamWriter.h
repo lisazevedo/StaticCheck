@@ -10,6 +10,6 @@ class StreamWriter
 		string path;
 		string extension;
 
-		string write(string file_name, string path);
+		void write();
 };
 
