@@ -2,7 +2,13 @@
 //
 
 #include <iostream>
-
+#include "LesAnalyzer.h"
+#include "SintaxAnalyzer.h"
+#include "StreamReader.h"
+#include "StreamWriterLES.h"
+#include "StreamWriterTAB.h"
+#include "SymbolTab.h"
+#include "Token.h"
 
 int main()
 {

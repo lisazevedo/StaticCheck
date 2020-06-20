@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{d7d9f67c-8661-48ab-9ac9-e5177e83c7b3}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StaticCheck.cpp">
@@ -24,22 +21,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LesAnalyzer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="SintaxAnalyzer.h">
-      <Filter>Headers</Filter>
+      <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="StreamReader.h">
-      <Filter>Headers</Filter>
+      <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="SymbolTab.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="SintaxAnalyzer.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="StreamWriter.h">
-      <Filter>Headers</Filter>
+      <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
     <ClInclude Include="Token.h">
-      <Filter>Headers</Filter>
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="SymbolTab.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="StreamWriterTAB.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
+    <ClInclude Include="StreamWriterLES.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
