@@ -12,64 +12,44 @@ using namespace std;
 class StreamReader
 {
 	public:
-		string file_name;
-		string path;
-		string extension = ".201";
 		
-		void read(string input) {
+		static string get_file_name(const std::string& str) {
 
-			get_file_name(input);
-		
+			size_t found = 0;
+			found = str.find_last_of("/\\");
 
-			if (!extension_validator()) {
-				cout << "Not valid extension" << endl;
-			}
-			else {
-				add_extension();
-				char ch;
+			string file_name = str.substr(found + 1);
 
-				ifstream file(this->path + "\\" + this->file_name, ios::in);
-
-				if (file.is_open()) {
-					cout << "Open file!!" << endl;
-					while (file.good()) {
-						file.get(ch);
-					}
-					file.close();
-				}
-				else {
-					cout << "Unable to open file" << endl;
-				}
-			}
-
+			return file_name;
 		}
-
-	private:
-		void get_file_name(const std::string& str) {
+		
+		static string get_path(const std::string& str) {
+			string path;
 
 			size_t found = 0;
 			found = str.find_last_of("/\\");
 
 			if (found != 0) {
-				this->path = str.substr(0, found);
+				return path = str.substr(0, found);
 			}
 			else {
 				size_t size = 10000;
 				char* path = NULL;
 
-				this->path = _getcwd(path, size);
+				return path = _getcwd(path, size);
 			}
-			this->file_name = str.substr(found + 1);
-		}
-	
 
-		bool extension_validator() {
+		}
+
+		static bool extension_validator(string file_name) {
 			
-			if (this->file_name.find(".") == std::string::npos) {
+			string extension = ".201";
+
+			if (file_name.find(".") == std::string::npos) {
 				return true;
 			}
 			else {
-				if (this->file_name.substr(this->file_name.find(".")) == this->extension) {
+				if (file_name.substr(file_name.find(".")) == extension) {
 					return true;
 				}
 				else {
@@ -80,11 +60,14 @@ class StreamReader
 			return false;
 		}
 
-		void add_extension() {
+		static string add_extension(string file_name) {
+			string extension = ".201";
 
-			if (this->file_name.find(this->extension) == std::string::npos) {
-				this->file_name += this->extension;
+			if (file_name.find(extension) == std::string::npos) {
+				file_name += extension;
 			}
+
+			return file_name;
 		}
 
 		

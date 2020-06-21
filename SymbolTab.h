@@ -7,7 +7,6 @@ class SymbolTab
 {
 	public:	
 		string type;
-		string lexeme;
 		string symbol;
 		
 		int token_id;

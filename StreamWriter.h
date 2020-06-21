@@ -10,6 +10,6 @@ class StreamWriter
 		string path;
 		string extension;
 
-		void write();
+		virtual void write();
 };
 
