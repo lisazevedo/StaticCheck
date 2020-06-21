@@ -16,7 +16,18 @@ using namespace std;
 
 int main()
 {
-    
+    StreamReader Sr;
+    string input;
+
+    while (true) {
+        system("CLS");
+        
+        cout << "File path: ";
+        cin >> input;
+
+        Sr.read(input);
+
+    }
     return 0;
 }
 
