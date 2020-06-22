@@ -41,6 +41,7 @@ class LesAnalyzer
                 case INITIAL:
                     if (ch == '@') {
                         this->token_clear();
+                        this->T.last = true;
                         return this->T;
                     }
                     else if (ch == ' ' || ch == '\t' || ch == '\r' ) {
@@ -434,6 +435,7 @@ class LesAnalyzer
             list<char>::iterator dupe = it;
             ++dupe;
             if (*dupe == '@') {
+                this->T.last = true;
                 return ' ';
             }
             return *dupe;

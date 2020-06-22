@@ -12,6 +12,7 @@ class Token
 		int appearance_qty;
 		list<int> line_appearance;
 		char ch;
+		bool last = false;
 		string lexeme;
 
 		
