@@ -117,10 +117,10 @@ class LesAnalyzer
                     break;
 
                 case DIGIT:
+                    
                     nxt_ch = this->peek(it);
-
                     // Formação de float
-                    if (nxt_ch == '.') {
+                    if (nxt_ch == ',') {
                         this->state = DIGIT_FLOAT;
                         this->word += ch;
                         advance(it, this->DASH);
@@ -176,10 +176,14 @@ class LesAnalyzer
 
                 case LES_THAN:
                     nxt_ch = this->peek(it);
-                    if (nxt_ch == '=') this->state = LES_EQUAL_THAN;
+                    if (nxt_ch == '=') {
+                        this->state = LES_EQUAL_THAN;
+                        this->word += ch;
+                        advance(it, this->DASH);
+                    }
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
-                        advance(it, this->DASH);
+                        //advance(it, this->DASH);
                         return this->T;
                     }
                     
@@ -187,30 +191,43 @@ class LesAnalyzer
 
                 case BIGGER_THAN:
                     nxt_ch = this->peek(it);
-                    if (nxt_ch == '=') this->state = BIGGER_EQUAL_THAN;
+                    if (nxt_ch == '=') {
+                        this->state = BIGGER_EQUAL_THAN;
+                        this->word += ch;
+                        advance(it, this->DASH);
+                    }
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
-                        advance(it, this->DASH);
+                        //advance(it, this->DASH);
                         return this->T;
                     }
                     break;
 
                 case EQUAL:
                     nxt_ch = this->peek(it);
-                    if (nxt_ch == '=') this->state = EQUAL_EQUAL;
+
+                    if (nxt_ch == '=') {
+                        this->word += ch;
+                        advance(it, this->DASH);
+                        this->state = EQUAL_EQUAL;
+                    }
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
-                        advance(it, this->DASH);
+                        //advance(it, this->DASH);
                         return this->T;
                     }
                     break;
 
                 case EXCLAMATION:
                     nxt_ch = this->peek(it);
-                    if (nxt_ch == '=') this->state = EXCLAMATION_EQUAL;
+                    if (nxt_ch == '=') {
+                        this->word += ch;
+                        advance(it, this->DASH);
+                        this->state = EXCLAMATION_EQUAL;
+                    }
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
-                        advance(it, this->DASH);
+                        //advance(it, this->DASH);
                         return this->T;
                     }
                     break;
@@ -271,19 +288,21 @@ class LesAnalyzer
                     }
                     break;
                 case ALPHA_HYPHEN:
+
                     this->word += ch;
                     advance(it, this->DASH);
                     this->state = ALPHA;
                     break;
                 case DIGIT_FLOAT:
+                   // cout << "DIGIT: " << this->word << endl;
                     nxt_ch = this->peek(it);
                     if (isdigit(nxt_ch)) {
                         this->word += ch;
                         advance(it, this->DASH);
                     }
                     else {
-                        this->word += ch;
-                        advance(it, this->DASH);
+                        //this->word += ch;
+                        //advance(it, this->DASH);
                         this->token_save(ch, n_lines);
                         return this->T;
                     }
@@ -297,6 +316,7 @@ class LesAnalyzer
                 case LES_EQUAL_THAN:
                     advance(it, this->DASH);
                     this->token_save(ch, n_lines);
+                    //cout << "MENOR IGUAL: " << this->word << endl;
                     return this->T;
                     break;
 
