@@ -44,6 +44,7 @@ class SintaxAnalyzer
             while (*it != '@'){
                 token = this->les.find_state(it, this->n_lines, this->saved_symbols, this->saved_words);
                 cout << "Lexeme: " << token.lexeme << endl;
+                if(!token.last) advance(it, 1);
             }
         }
 
@@ -90,7 +91,6 @@ class SintaxAnalyzer
 
         bool is_c_valid(char c) {
             string s(1, c);
-            cout << this->les.find_token(saved_symbols, s) << endl;
             if (this->les.find_token(saved_symbols, s) != 0 || isalpha(c) || isdigit(c) || c == ' ' || c == '\t' || c == '\r' || c == '\n') return true;
             return false;
         }
