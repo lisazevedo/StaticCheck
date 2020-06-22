@@ -24,12 +24,17 @@ class LesAnalyzer
         int position;
         int DASH = 1;
 
-        map<int, string> saved_words;
-        map<int, string> saved_symbols;
-        map<int, string> saved_types;
         //char current_position;
 
-        Token find_state(list<char>::iterator &it, int *n_lines, string *error) {
+        // Função de peek improvisada, copia o iterator, avança um char e retorna o char 
+        // Checar ponteiro no parametro pq eu sou makeks
+        char peek(list<char>::iterator& it) {
+            list<char>::iterator dupe = it;
+            ++dupe;
+            return *dupe;
+        }
+
+        Token find_state(list<char>::iterator &it, int *n_lines, map<int, string> *saved_symbols) {
             char ch;
          
             while (true) {
@@ -83,15 +88,47 @@ class LesAnalyzer
                     break;
 
                 case ALPHA:
+                    this->word += ch;
+                    advance(it, this->DASH);
+                    char nxt_ch = this->peek(it);
 
+                    // Formação de letra com hífen
+                    if (nxt_ch == '-') this->state = ALPHA_HYPHEN;
+
+                    // Quebra de linha
+                    else if (nxt_ch == '\n') {
+                        n_lines++;
+                        advance(it, this->DASH);
+                    }
                     break;
 
                 case DIGIT:
+                    this->word += ch;
+                    char nxt_ch = this->peek(it);
 
+                    // Formação de float
+                    if (nxt_ch == '.') this->state = DIGIT_FLOAT;
+                    if (!isdigit(nxt_ch) && nxt_ch != '.' && this->state != DIGIT_FLOAT) this->DIGIT_INT;
+                    // Essa parte ta diferente do deles, não entendi o pq do que eles tavam fazendo
+                    if (nxt_ch == '\n') {
+                        n_lines++;
+                        advance(it, this->DASH);
+                    }
                     break;
 
                 case PARENTHESIS_OPEN:
+                    // Find method retorna um iterator
+                    string s(1, ch);
+                    // Se esse find não funcionar é pq precisa trocar a ordem dos maps
+                    // no caso, o primeiro é a key dele, que deveria ser a string, 
+                    // que é usada pra fazer a pesquisa
+                    this->T.lexeme = s;
+                    this->T.length = 1;
+                    this->T.exceeded_length 0;
+                    this->T.token_id = saved_symbols->find(s)->second
 
+                    // Estava tentando fazer o find funcionar, ainda não consegui
+                    // Vai precisar trocar a ordem do int e string do map
                     break;
 
                 case PARENTHESIS_CLOSE:

@@ -13,7 +13,6 @@ class Token
 		list<int> line_appearance;
 		char ch;
 		string lexeme;
-		string error;
 
 		Token();
 };
