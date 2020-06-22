@@ -16,9 +16,9 @@ class SintaxAnalyzer
 		StreamWriter writer_sintax;
 		LesAnalyzer les;
 
-		map<int, string> saved_words;
-		map<int, string> saved_symbols;
-		map<int, string> saved_types;
+		map<string, int> saved_words;
+		map<string, int> saved_symbols;
+		map<string, int> saved_types;
 
         string file_name;
         string path;
@@ -76,59 +76,58 @@ class SintaxAnalyzer
 
 
         void fill_saved_words() {
-            this->saved_words.insert(pair<int, string>(310, "BOOL"));
-            this->saved_words.insert(pair<int, string>(311, "WHILE"));
-            this->saved_words.insert(pair<int, string>(312, "BREAK"));
-            this->saved_words.insert(pair<int, string>(313, "VOID"));
-            this->saved_words.insert(pair<int, string>(314, "CHAR"));
-            this->saved_words.insert(pair<int, string>(315, "TRUE"));
-            this->saved_words.insert(pair<int, string>(316, "ELSE"));
-            this->saved_words.insert(pair<int, string>(317, "STRING"));
-            this->saved_words.insert(pair<int, string>(318, "END"));
-            this->saved_words.insert(pair<int, string>(319, "RETURN"));
-            this->saved_words.insert(pair<int, string>(320, "FALSE"));
-            this->saved_words.insert(pair<int, string>(321, "PROGRAM"));
-            this->saved_words.insert(pair<int, string>(322, "FLOAT"));
-            this->saved_words.insert(pair<int, string>(323, "INT"));
-            this->saved_words.insert(pair<int, string>(324, "IF"));
-            this->saved_words.insert(pair<int, string>(325, "BEGIN"));
-
+            this->saved_words.insert(pair<string, int>("BOOL",310));
+            this->saved_words.insert(pair<string, int>("WHILE", 311));
+            this->saved_words.insert(pair<string, int>("BREAK", 312));
+            this->saved_words.insert(pair<string, int>("VOID", 313));
+            this->saved_words.insert(pair<string, int>("CHAR", 314));
+            this->saved_words.insert(pair<string, int>("TRUE", 315));
+            this->saved_words.insert(pair<string, int>("ELSE", 316));
+            this->saved_words.insert(pair<string, int>("STRING", 317));
+            this->saved_words.insert(pair<string, int>("END", 318));
+            this->saved_words.insert(pair<string, int>("RETURN", 319));
+            this->saved_words.insert(pair<string, int>("FALSE", 320));
+            this->saved_words.insert(pair<string, int>("PROGRAM", 321));
+            this->saved_words.insert(pair<string, int>("FLOAT", 322));
+            this->saved_words.insert(pair<string, int>("INT", 323));
+            this->saved_words.insert(pair<string, int>("IF", 324));
+            this->saved_words.insert(pair<string, int>("BEGIN", 325));
         }
 
         void fill_saved_symbols() {
-            this->saved_symbols.insert(pair<int, string>(410, "!="));
-            this->saved_symbols.insert(pair<int, string>(411, "#"));
-            this->saved_symbols.insert(pair<int, string>(412, "&"));
-            this->saved_symbols.insert(pair<int, string>(413, "("));
-            this->saved_symbols.insert(pair<int, string>(414, "/"));
-            this->saved_symbols.insert(pair<int, string>(415, ";"));
-            this->saved_symbols.insert(pair<int, string>(416, "["));
-            this->saved_symbols.insert(pair<int, string>(417, "{"));
-            this->saved_symbols.insert(pair<int, string>(418, "+"));
-            this->saved_symbols.insert(pair<int, string>(419, "<="));
-            this->saved_symbols.insert(pair<int, string>(420, "="));
-            this->saved_symbols.insert(pair<int, string>(421, ">="));
-            this->saved_symbols.insert(pair<int, string>(422, "!"));
-            this->saved_symbols.insert(pair<int, string>(423, "%"));
-            this->saved_symbols.insert(pair<int, string>(424, ")"));
-            this->saved_symbols.insert(pair<int, string>(425, "*"));
-            this->saved_symbols.insert(pair<int, string>(426, ","));
-            this->saved_symbols.insert(pair<int, string>(427, "]"));
-            this->saved_symbols.insert(pair<int, string>(428, "|"));
-            this->saved_symbols.insert(pair<int, string>(429, "}"));
-            this->saved_symbols.insert(pair<int, string>(430, "<"));
-            this->saved_symbols.insert(pair<int, string>(431, "=="));
-            this->saved_symbols.insert(pair<int, string>(432, ">"));
-            this->saved_symbols.insert(pair<int, string>(433, "-"));
+            this->saved_symbols.insert(pair<string, int>("!=", 410));
+            this->saved_symbols.insert(pair<string, int>("#", 411));
+            this->saved_symbols.insert(pair<string, int>("&", 412));
+            this->saved_symbols.insert(pair<string, int>("(", 413));
+            this->saved_symbols.insert(pair<string, int>("/", 414));
+            this->saved_symbols.insert(pair<string, int>(";", 415));
+            this->saved_symbols.insert(pair<string, int>("[", 416));
+            this->saved_symbols.insert(pair<string, int>("{", 417));
+            this->saved_symbols.insert(pair<string, int>("+", 418));
+            this->saved_symbols.insert(pair<string, int>("<=", 419));
+            this->saved_symbols.insert(pair<string, int>("=", 420));
+            this->saved_symbols.insert(pair<string, int>(">=", 421));
+            this->saved_symbols.insert(pair<string, int>("!", 422));
+            this->saved_symbols.insert(pair<string, int>("%", 423));
+            this->saved_symbols.insert(pair<string, int>(")", 424));
+            this->saved_symbols.insert(pair<string, int>("*", 425));
+            this->saved_symbols.insert(pair<string, int>(",", 426));
+            this->saved_symbols.insert(pair<string, int>("]", 427));
+            this->saved_symbols.insert(pair<string, int>("|", 428));
+            this->saved_symbols.insert(pair<string, int>("}", 429));
+            this->saved_symbols.insert(pair<string, int>("<", 430));
+            this->saved_symbols.insert(pair<string, int>("==", 431));
+            this->saved_symbols.insert(pair<string, int>(">", 432));
+            this->saved_symbols.insert(pair<string, int>("-", 433));
         }
 
         void fill_saved_types() {
-            this->saved_types.insert(pair<int, string>(510, "ch"));
-            this->saved_types.insert(pair<int, string>(511, "CONSTANT-STRING"));
-            this->saved_types.insert(pair<int, string>(512, "FLOAT-NUMBER"));
-            this->saved_types.insert(pair<int, string>(513, "FUNCTION"));
-            this->saved_types.insert(pair<int, string>(514, "IDENTIFIER"));
-            this->saved_types.insert(pair<int, string>(515, "INTEGER-NUMBER"));
+            this->saved_types.insert(pair<string, int>("ch", 510));
+            this->saved_types.insert(pair<string, int>("CONSTANT-STRING", 511));
+            this->saved_types.insert(pair<string, int>("FLOAT-NUMBER", 512));
+            this->saved_types.insert(pair<string, int>("FUNCTION", 513));
+            this->saved_types.insert(pair<string, int>("IDENTIFIER", 514));
+            this->saved_types.insert(pair<string, int>("INTEGER-NUMBER", 515));
         }
 };
 

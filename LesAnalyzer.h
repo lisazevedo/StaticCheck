@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 #include <iterator>
+#include <list>
 #include <algorithm>
 
 using namespace std;
@@ -26,7 +27,7 @@ class LesAnalyzer
 
         //char current_position;
 
-        Token find_state(list<char>::iterator &it, int *n_lines, map<int, string> *saved_symbols) {
+        Token find_state(list<char>::iterator &it, int *n_lines, map<int, string> saved_symbols) {
             char ch;
          
             while (true) {
@@ -103,7 +104,7 @@ class LesAnalyzer
                     if (!isdigit(nxt_ch) && nxt_ch != '.' && this->state != DIGIT_FLOAT) this->DIGIT_INT;
                     // Essa parte ta diferente do deles, não entendi o pq do que eles tavam fazendo
                     if (nxt_ch == '\n') {
-                        n_lines++;
+                        *n_lines++;
                         advance(it, this->DASH);
                     }
                     break;
@@ -120,9 +121,8 @@ class LesAnalyzer
                     this->T.lexeme = this->word;
                     this->check_token_length();
                     this->T.token_id = this->find_token(saved_symbols, this->word);
-                    this->T.line_appearance.push_back(n_lines);
+                    this->T.line_appearance.push_back(*n_lines);
                     advance(it, this->DASH);
-                    this->token_clear();
                     return this->T;
                     break;
 
@@ -131,9 +131,8 @@ class LesAnalyzer
                     this->T.lexeme = this->word;
                     this->check_token_length();
                     this->T.token_id = this->find_token(saved_symbols, this->word);
-                    this->T.line_appearance.push_back(n_lines);
+                    this->T.line_appearance.push_back(*n_lines);
                     advance(it, this->DASH);
-                    this->token_clear();
                     return this->T;
                     break;
 
@@ -144,7 +143,6 @@ class LesAnalyzer
                     this->T.token_id = this->find_token(saved_symbols, this->word);
                     this->T.line_appearance.push_back(n_lines);
                     advance(it, this->DASH);
-                    this->token_clear();
                     return this->T;
                     break;
 
@@ -155,7 +153,6 @@ class LesAnalyzer
                     this->T.token_id = this->find_token(saved_symbols, this->word);
                     this->T.line_appearance.push_back(n_lines);
                     advance(it, this->DASH);
-                    this->token_clear();
                     return this->T;
                     break;
 
@@ -166,7 +163,6 @@ class LesAnalyzer
                     this->T.token_id = this->find_token(saved_symbols, this->word);
                     this->T.line_appearance.push_back(n_lines);
                     advance(it, this->DASH);
-                    this->token_clear();
                     return this->T;
                     break;
 
@@ -177,7 +173,6 @@ class LesAnalyzer
                     this->T.token_id = this->find_token(saved_symbols, this->word);
                     this->T.line_appearance.push_back(n_lines);
                     advance(it, this->DASH);
-                    this->token_clear();
                     return this->T;
                     break;
 
@@ -191,7 +186,6 @@ class LesAnalyzer
                         this->T.token_id = this->find_token(saved_symbols, this->word);
                         this->T.line_appearance.push_back(n_lines);
                         advance(it, this->DASH);
-                        this->token_clear();
                         return this->T;
                     }
                     
@@ -207,7 +201,6 @@ class LesAnalyzer
                         this->T.token_id = this->find_token(saved_symbols, this->word);
                         this->T.line_appearance.push_back(n_lines);
                         advance(it, this->DASH);
-                        this->token_clear();
                         return this->T;
                     }
                     break;
@@ -222,7 +215,6 @@ class LesAnalyzer
                         this->T.token_id = this->find_token(saved_symbols, this->word);
                         this->T.line_appearance.push_back(n_lines);
                         advance(it, this->DASH);
-                        this->token_clear();
                         return this->T;
                     }
                     break;
@@ -237,7 +229,6 @@ class LesAnalyzer
                         this->T.token_id = this->find_token(saved_symbols, this->word);
                         this->T.line_appearance.push_back(n_lines);
                         advance(it, this->DASH);
-                        this->token_clear();
                         return this->T;
                     }
                     break;
@@ -290,12 +281,9 @@ class LesAnalyzer
                     break;
                 }
 
-                
             }
+         this->token_clear();
 
-                
-            
-            //return this->T;
         }
 
     private:
@@ -336,7 +324,7 @@ class LesAnalyzer
             return *dupe;
         }
 
-        char find_token(map<string, int>* saved_simbols, string to_find) {
+        char find_token(map<string, int> saved_symbols, string to_find) {
             map<string, int>::iterator it;
             it = saved_symbols.find(to_find);
             if (it != saved_symbols.end()) {
