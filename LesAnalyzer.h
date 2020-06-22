@@ -116,9 +116,11 @@ class LesAnalyzer
                         n_lines++;
                         advance(it, this->DASH);
                     }
+                    else {
+                        this->word += ch;
+                        advance(it, this->DASH);
+                    }
 
-                    this->word += ch;
-                    advance(it, this->DASH);
                     break;
 
                 case DIGIT:
@@ -130,14 +132,15 @@ class LesAnalyzer
                         this->word += ch;
                         advance(it, this->DASH);
                     }
-                    if (!isdigit(nxt_ch) && nxt_ch != '.' && this->state != DIGIT_FLOAT) this->state = DIGIT_INT;
-                    if (nxt_ch == '\n') {
+                    else if (!isdigit(nxt_ch) && nxt_ch != '.' && this->state != DIGIT_FLOAT) this->state = DIGIT_INT;
+                    else if (nxt_ch == '\n') {
                         n_lines++;
                         advance(it, this->DASH);
                     }
-
-                    this->word += ch;
-                    advance(it, this->DASH);
+                    else {
+                        this->word += ch;
+                        advance(it, this->DASH);
+                    }
                     break;
 
                 // NOTAS
