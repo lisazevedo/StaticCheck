@@ -183,7 +183,6 @@ class LesAnalyzer
                     }
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
-                        //advance(it, this->DASH);
                         return this->T;
                     }
                     
@@ -198,7 +197,6 @@ class LesAnalyzer
                     }
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
-                        //advance(it, this->DASH);
                         return this->T;
                     }
                     break;
@@ -213,7 +211,6 @@ class LesAnalyzer
                     }
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
-                        //advance(it, this->DASH);
                         return this->T;
                     }
                     break;
@@ -227,7 +224,6 @@ class LesAnalyzer
                     }
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
-                        //advance(it, this->DASH);
                         return this->T;
                     }
                     break;
@@ -267,7 +263,6 @@ class LesAnalyzer
                     return this->T;
                     break;
 
-                
                 case ASTERISK:
                     this->token_save(ch, saved_symbols, n_lines);
                     return this->T;
@@ -314,26 +309,21 @@ class LesAnalyzer
                     break;
 
                 case LES_EQUAL_THAN:
-                    advance(it, this->DASH);
                     this->token_save(ch, n_lines);
-                    //cout << "MENOR IGUAL: " << this->word << endl;
                     return this->T;
                     break;
 
                 case BIGGER_EQUAL_THAN:
-                    advance(it, this->DASH);
                     this->token_save(ch, n_lines);
                     return this->T;
                     break;
 
                 case EQUAL_EQUAL:
-                    advance(it, this->DASH);
                     this->token_save(ch, n_lines);
                     return this->T;
                     break;
 
                 case EXCLAMATION_EQUAL:
-                    advance(it, this->DASH);
                     this->token_save(ch, n_lines);
                     return this->T;
                     break;
