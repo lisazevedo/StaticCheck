@@ -18,7 +18,7 @@ class LesAnalyzer
             EQUAL, EXCLAMATION, SEMI_COLON, COMMA, BRACKETS_OPEN, BRACKETS_CLOSE,
             CURLY_BRACKETS_OPEN, CURLY_BRACKETS_CLOSED, PERCENT, ASTERISK, PIPE,
             SLASH, UNDERSCORE, ALPHA_HYPHEN, DIGIT_FLOAT, DIGIT_INT, LES_EQUAL_THAN,
-            BIGGER_EQUAL_THAN, EQUAL_EQUAL, EXCLAMATIONS_EQUAL, SLASH_SLASH, SLASH_ASTERISK
+            BIGGER_EQUAL_THAN, EQUAL_EQUAL, EXCLAMATION_EQUAL, SLASH_SLASH, SLASH_ASTERISK
         };
 
         string word;
@@ -86,12 +86,17 @@ class LesAnalyzer
                     char nxt_ch = this->peek(it);
 
                     // Formação de letra com hífen
-                    if (nxt_ch == '-') this->state = ALPHA_HYPHEN;
+                    if (nxt_ch == '-') {
+                        this->state = ALPHA_HYPHEN;
+                        this->word += ch;
+                        advance(it, this->DASH);
+                    }
 
-                    // Fim da palavra
-                    else if (nxt_ch == ' ') {
+                    else if (!isalnum(nxt_ch)) {
                         // Formação de palavra reservada
-                        if (this->find_token(saved_words, this->word) != 0) 
+                        this->word += ch;
+                        advance(it, this->DASH);
+                        if (this->find_token(saved_words, this->word) != 0)
                             this->token_save(ch, saved_words, n_lines);
                         else
                             this->token_save(ch, n_lines);
@@ -109,17 +114,22 @@ class LesAnalyzer
                     break;
 
                 case DIGIT:
-                    this->word += ch;
                     char nxt_ch = this->peek(it);
 
                     // Formação de float
-                    if (nxt_ch == '.') this->state = DIGIT_FLOAT;
-                    if (!isdigit(nxt_ch) && nxt_ch != '.' && this->state != DIGIT_FLOAT) this->DIGIT_INT;
-                    // Essa parte ta diferente do deles, não entendi o pq do que eles tavam fazendo
+                    if (nxt_ch == '.') {
+                        this->state = DIGIT_FLOAT;
+                        this->word += ch;
+                        advance(it, this->DASH);
+                    }
+                    if (!isdigit(nxt_ch) && nxt_ch != '.' && this->state != DIGIT_FLOAT) this->state = DIGIT_INT;
                     if (nxt_ch == '\n') {
                         n_lines++;
                         advance(it, this->DASH);
                     }
+
+                    this->word += ch;
+                    advance(it, this->DASH);
                     break;
 
                 // NOTAS
@@ -235,7 +245,7 @@ class LesAnalyzer
                     return this->T;
                     break;
 
-                // fazer asterisco barra / fim de comentário
+                
                 case ASTERISK:
                     this->token_save(ch, saved_symbols, n_lines);
                     return this->T;
@@ -262,31 +272,52 @@ class LesAnalyzer
                     break;
 
                 case ALPHA_HYPHEN:
-                    
+                    this->word += ch;
+                    advance(it, this->DASH);
+                    this->state = ALPHA;
                     break;
 
                 case DIGIT_FLOAT:
-
+                    char nxt_ch = this->peek(it);
+                    if (isdigit(nxt_ch)) {
+                        this->word += ch;
+                        advance(it, this->DASH);
+                    }
+                    else {
+                        this->word += ch;
+                        advance(it, this->DASH);
+                        this->token_save('0', n_lines);
+                        return this->T;
+                    }
                     break;
 
                 case DIGIT_INT:
-
+                    this->token_save(ch, n_lines);
+                    return this->T;
                     break;
 
                 case LES_EQUAL_THAN:
-
+                    advance(it, this->DASH);
+                    this->token_save(ch, n_lines);
+                    return this->T;
                     break;
 
                 case BIGGER_EQUAL_THAN:
-
+                    advance(it, this->DASH);
+                    this->token_save(ch, n_lines);
+                    return this->T;
                     break;
 
                 case EQUAL_EQUAL:
-
+                    advance(it, this->DASH);
+                    this->token_save(ch, n_lines);
+                    return this->T;
                     break;
 
                 case EXCLAMATIONS_EQUAL:
-
+                    advance(it, this->DASH);
+                    this->token_save(ch, n_lines);
+                    return this->T;
                     break;
 
                 case SLASH_SLASH:
@@ -360,6 +391,7 @@ class LesAnalyzer
             this->T.appearance_qty = 0;
             this->T.line_appearance.clear();
             this->T.ch = ' ';
+            this->state = INITIAL;
         }
 
         void check_token_length() {
