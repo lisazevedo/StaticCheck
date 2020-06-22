@@ -19,7 +19,7 @@ class LesAnalyzer
             PLUS, HYPHEN, AMPERSAND, OLD_LADY_GAME, LES_THAN, BIGGER_THAN,
             EQUAL, EXCLAMATION, SEMI_COLON, COMMA, BRACKETS_OPEN, BRACKETS_CLOSE,
             CURLY_BRACKETS_OPEN, CURLY_BRACKETS_CLOSED, PERCENT, ASTERISK, PIPE,
-            SLASH, UNDERSCORE, ALPHA_HYPHEN, DIGIT_FLOAT, DIGIT_INT, LES_EQUAL_THAN,
+            SLASH, ALPHA_HYPHEN, DIGIT_FLOAT, DIGIT_INT, LES_EQUAL_THAN,
             BIGGER_EQUAL_THAN, EQUAL_EQUAL, EXCLAMATION_EQUAL, SLASH_SLASH, SLASH_ASTERISK
         };
         Case state;
@@ -79,11 +79,7 @@ class LesAnalyzer
                     else if (ch == '*') this->state = ASTERISK; 
                     else if (ch == '|') this->state = PIPE;
                     else if (ch == '/') this->state = SLASH;
-                    else if (ch == '_') {
-                        this->state = UNDERSCORE;
-                        this->word += ch;
-                        // contadorChar++;
-                    }
+                   
                     else {
                         this->state = INITIAL;
                         advance(it, this->DASH);
@@ -94,16 +90,13 @@ class LesAnalyzer
                     nxt_ch = this->peek(it);
 
                     // Formação de letra com hífen
-                    if (nxt_ch == '-') {
+                    if (nxt_ch == '-' ) {
                         this->state = ALPHA_HYPHEN;
                         this->word += ch;
                         advance(it, this->DASH);
                     }
-
                     else if (!isalnum(nxt_ch)) {
                         // Formação de palavra reservada
-                        this->word += ch;
-                        advance(it, this->DASH);
                         if (this->find_token(saved_words, this->word) != 0)
                             this->token_save(ch, saved_words, n_lines);
                         else
@@ -111,7 +104,6 @@ class LesAnalyzer
 
                         return this->T;
                     }
-
                     // Quebra de linha
                     else if (nxt_ch == '\n') {
                         n_lines++;
@@ -133,7 +125,8 @@ class LesAnalyzer
                         this->word += ch;
                         advance(it, this->DASH);
                     }
-                    else if (!isdigit(nxt_ch) && nxt_ch != '.' && this->state != DIGIT_FLOAT) this->state = DIGIT_INT;
+                    else if (!isdigit(nxt_ch)) this->state = DIGIT_INT;
+
                     else if (nxt_ch == '\n') {
                         n_lines++;
                         advance(it, this->DASH);
@@ -277,18 +270,11 @@ class LesAnalyzer
                         return this->T;
                     }
                     break;
-
-                case UNDERSCORE:
-                    this->token_save(ch, saved_symbols, n_lines);
-                    return this->T;
-                    break;
-
                 case ALPHA_HYPHEN:
                     this->word += ch;
                     advance(it, this->DASH);
                     this->state = ALPHA;
                     break;
-
                 case DIGIT_FLOAT:
                     nxt_ch = this->peek(it);
                     if (isdigit(nxt_ch)) {
@@ -298,7 +284,7 @@ class LesAnalyzer
                     else {
                         this->word += ch;
                         advance(it, this->DASH);
-                        this->token_save('0', n_lines);
+                        this->token_save(ch, n_lines);
                         return this->T;
                     }
                     break;
