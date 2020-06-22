@@ -14,6 +14,8 @@ class Token
 		char ch;
 		string lexeme;
 
-		Token();
+		
+
+		//Token();
 };
 

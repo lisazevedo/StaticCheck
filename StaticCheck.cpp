@@ -14,16 +14,13 @@
 
 using namespace std;
 
-void test(list<string>::iterator &it) {
-    advance(it, 1);
-    std::cout << *it << std::endl;
-}
+
 
 int main()
-{
-    cout << int("\"")
-    return 0;
-    
+{   
+	SintaxAnalyzer Sa;
+
+	Sa.program();
   
 }
 

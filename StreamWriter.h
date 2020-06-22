@@ -1,8 +1,8 @@
+#pragma once
 #include <string>
 
 using namespace std;
 
-#pragma once
 class StreamWriter
 {
 	public:
@@ -10,6 +10,7 @@ class StreamWriter
 		string path;
 		string extension;
 
-		virtual void write();
+		
+		//void write();
 };
 

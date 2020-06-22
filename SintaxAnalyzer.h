@@ -1,3 +1,4 @@
+#pragma once
 #include "StreamReader.h"
 #include "StreamWriter.h"
 #include "LesAnalyzer.h"
@@ -8,7 +9,6 @@
 
 using namespace std;
 
-#pragma once
 class SintaxAnalyzer
 {
 	public:
@@ -27,13 +27,24 @@ class SintaxAnalyzer
 
         int n_lines;
 
-        void program(string input) {
-            read(input);
-            list<char>::iterator it = this->buf.begin();
-            //while () {
-            //    this->les.find_state(it);
-            //}
+        void program() {
+            string input = "A:\\Repo\\testes\\test2";
+            Token token;
+            this->fill_saved_symbols();
+            this->fill_saved_types();
+            this->fill_saved_words();
 
+            cout << "Digite o path: ";
+            //cin >> input;
+
+            read(input);
+            for (char i : this->buf) { cout << i; }
+
+            list<char>::iterator it = this->buf.begin();
+            while (*it != '@'){
+                token = this->les.find_state(it, this->n_lines, this->saved_symbols, this->saved_words);
+                cout << "Lexeme: " << token.lexeme << endl;
+            }
         }
 
         void read(string input) { 
@@ -53,10 +64,13 @@ class SintaxAnalyzer
                 if (file.is_open()) {
                     cout << "Open file!!" << endl;
 
-                    while (file.good()) {
-                        file.get(ch);
-                        this->buf.push_back(toupper(ch));
+                    while (file.get(ch)) {
+                        
+                        if (is_c_valid(ch)) {
+                            this->buf.push_back(toupper(ch));
+                        }
                     }
+                    this->buf.push_back('@');
                     file.close();
                 }
                 else {
@@ -74,8 +88,10 @@ class SintaxAnalyzer
 
 		}
 
-        bool is_c_valid(map<string, int> saved_symbols, char c) {
-            if (saved_symbols.count(c) > 0 || isalpha(c) || isdigit(c)) return true;
+        bool is_c_valid(char c) {
+            string s(1, c);
+            cout << this->les.find_token(saved_symbols, s) << endl;
+            if (this->les.find_token(saved_symbols, s) != 0 || isalpha(c) || isdigit(c) || c == ' ' || c == '\t' || c == '\r' || c == '\n') return true;
             return false;
         }
 

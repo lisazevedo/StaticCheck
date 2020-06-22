@@ -1,4 +1,7 @@
+#pragma once
+
 #include "Token.h"
+
 #include <map>
 #include <string>
 #include <iterator>
@@ -7,7 +10,6 @@
 
 using namespace std;
 
-#pragma once
 class LesAnalyzer
 {
 
@@ -20,35 +22,40 @@ class LesAnalyzer
             SLASH, UNDERSCORE, ALPHA_HYPHEN, DIGIT_FLOAT, DIGIT_INT, LES_EQUAL_THAN,
             BIGGER_EQUAL_THAN, EQUAL_EQUAL, EXCLAMATION_EQUAL, SLASH_SLASH, SLASH_ASTERISK
         };
+        Case state;
 
         string word;
-        Case state;
         int position;
         int DASH = 1;
 
         //char current_position;
 
         Token find_state(list<char>::iterator &it, int &n_lines, map<string, int> saved_symbols, map<string, int> saved_words) {
-            char ch;
+            char ch, nxt_ch;
             this->token_clear();
 
             while (true) {
 
                 ch = *it;
-
                 switch (this->state){
                 case INITIAL:
-                    if (ch == ' ' || ch == '\t' || ch == '\r' ) {
+                    if (ch == '@') {
+                        this->token_clear();
+                        return this->T;
+                    }
+                    else if (ch == ' ' || ch == '\t' || ch == '\r' ) {
                         this->state = INITIAL;
                         advance(it, this->DASH);
                         break;
                     }
                     else if (ch == '\n') {
+
                         this->state = INITIAL;
                         advance(it, this->DASH);
                         n_lines++;
                         break;
                     }
+                    
                     else if (isalpha(ch)) this->state = ALPHA;
                     else if (isdigit(ch)) this->state = DIGIT;
                     else if (ch == '(') this->state = PARENTHESIS_OPEN;
@@ -83,7 +90,7 @@ class LesAnalyzer
                     break;
 
                 case ALPHA:
-                    char nxt_ch = this->peek(it);
+                    nxt_ch = this->peek(it);
 
                     // Formação de letra com hífen
                     if (nxt_ch == '-') {
@@ -100,6 +107,7 @@ class LesAnalyzer
                             this->token_save(ch, saved_words, n_lines);
                         else
                             this->token_save(ch, n_lines);
+
                         return this->T;
                     }
 
@@ -114,7 +122,7 @@ class LesAnalyzer
                     break;
 
                 case DIGIT:
-                    char nxt_ch = this->peek(it);
+                    nxt_ch = this->peek(it);
 
                     // Formação de float
                     if (nxt_ch == '.') {
@@ -170,8 +178,8 @@ class LesAnalyzer
                     break;
 
                 case LES_THAN:
-                    char nxt_ch = this->peek(it);
-                    if (nxt_ch == '=') this->state == LES_EQUAL_THAN;
+                    nxt_ch = this->peek(it);
+                    if (nxt_ch == '=') this->state = LES_EQUAL_THAN;
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
                         advance(it, this->DASH);
@@ -181,8 +189,8 @@ class LesAnalyzer
                     break;
 
                 case BIGGER_THAN:
-                    char nxt_ch = this->peek(it);
-                    if (nxt_ch == '=') this->state == BIGGER_EQUAL_THAN;
+                    nxt_ch = this->peek(it);
+                    if (nxt_ch == '=') this->state = BIGGER_EQUAL_THAN;
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
                         advance(it, this->DASH);
@@ -191,8 +199,8 @@ class LesAnalyzer
                     break;
 
                 case EQUAL:
-                    char nxt_ch = this->peek(it);
-                    if (nxt_ch == '=') this->state == EQUAL_EQUAL;
+                    nxt_ch = this->peek(it);
+                    if (nxt_ch == '=') this->state = EQUAL_EQUAL;
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
                         advance(it, this->DASH);
@@ -201,8 +209,8 @@ class LesAnalyzer
                     break;
 
                 case EXCLAMATION:
-                    char nxt_ch = this->peek(it);
-                    if (nxt_ch == '=') this->state == EXCLAMATION_EQUAL;
+                    nxt_ch = this->peek(it);
+                    if (nxt_ch == '=') this->state = EXCLAMATION_EQUAL;
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
                         advance(it, this->DASH);
@@ -257,9 +265,9 @@ class LesAnalyzer
                     break;
 
                 case SLASH:
-                    char nxt_ch = this->peek(it);
-                    if (nxt_ch == '/') this->state == SLASH_SLASH;
-                    else if (nxt_ch == '*') this->state == SLASH_ASTERISK;
+                    nxt_ch = this->peek(it);
+                    if (nxt_ch == '/') this->state = SLASH_SLASH;
+                    else if (nxt_ch == '*') this->state = SLASH_ASTERISK;
                     else {
                         this->token_save(ch, saved_symbols, n_lines);
                         return this->T;
@@ -278,7 +286,7 @@ class LesAnalyzer
                     break;
 
                 case DIGIT_FLOAT:
-                    char nxt_ch = this->peek(it);
+                    nxt_ch = this->peek(it);
                     if (isdigit(nxt_ch)) {
                         this->word += ch;
                         advance(it, this->DASH);
@@ -314,7 +322,7 @@ class LesAnalyzer
                     return this->T;
                     break;
 
-                case EXCLAMATIONS_EQUAL:
+                case EXCLAMATION_EQUAL:
                     advance(it, this->DASH);
                     this->token_save(ch, n_lines);
                     return this->T;
@@ -322,7 +330,7 @@ class LesAnalyzer
 
                 case SLASH_SLASH:
                     advance(it, this->DASH);
-                    char nxt_ch = this->peek(it);
+                    nxt_ch = this->peek(it);
                     if (nxt_ch == '\n') {
                         advance(it, this->DASH);
                         this->state = INITIAL;
@@ -333,10 +341,10 @@ class LesAnalyzer
                 // Se possível melhorar este trecho 
                 case SLASH_ASTERISK:
                     advance(it, this->DASH);
-                    char nxt_ch = this->peek(it);
+                    nxt_ch = this->peek(it);
                     if (nxt_ch == '*') {
                         advance(it, this->DASH);
-                        char nxt_ch = this->peek(it);
+                        nxt_ch = this->peek(it);
                         if (nxt_ch == '/') {
                             advance(it, this->DASH);
                             this->state = INITIAL;
@@ -355,11 +363,21 @@ class LesAnalyzer
                     break;
 
                 default:
+                    return T;
                     break;
                 }
 
             }
         
+        }
+
+        int find_token(map<string, int> saved_symbols, string to_find) {
+            map<string, int>::iterator it;
+            it = saved_symbols.find(to_find);
+            if (it != saved_symbols.end()) {
+                return (*it).second;
+            }
+            return 0;
         }
 
     private:
@@ -415,17 +433,13 @@ class LesAnalyzer
         char peek(list<char>::iterator& it) {
             list<char>::iterator dupe = it;
             ++dupe;
+            if (*dupe == '@') {
+                return ' ';
+            }
             return *dupe;
         }
 
-        int find_token(map<string, int> saved_symbols, string to_find) {
-            map<string, int>::iterator it;
-            it = saved_symbols.find(to_find);
-            if (it != saved_symbols.end()) {
-                return (*it).second;
-            }
-            return 0;
-        }
+
 
     //LesAnalyzer();
     //~LesAnalyzer();
