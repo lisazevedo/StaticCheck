@@ -74,6 +74,10 @@ class SintaxAnalyzer
 
 		}
 
+        bool is_c_valid(map<string, int> saved_symbols, char c) {
+            if (saved_symbols.count(c) > 0 || isalpha(c) || isdigit(c)) return true;
+            return false;
+        }
 
         void fill_saved_words() {
             this->saved_words.insert(pair<string, int>("BOOL",310));

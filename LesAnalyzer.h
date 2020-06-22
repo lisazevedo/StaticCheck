@@ -17,7 +17,8 @@ class LesAnalyzer
             PLUS, HYPHEN, AMPERSAND, OLD_LADY_GAME, LES_THAN, BIGGER_THAN,
             EQUAL, EXCLAMATION, SEMI_COLON, COMMA, BRACKETS_OPEN, BRACKETS_CLOSE,
             CURLY_BRACKETS_OPEN, CURLY_BRACKETS_CLOSED, PERCENT, ASTERISK, PIPE,
-            SLASH, UNDERSCORE
+            SLASH, UNDERSCORE, ALPHA_HYPHEN, DIGIT_FLOAT, DIGIT_INT, LES_EQUAL_THAN,
+            BIGGER_EQUAL_THAN, EQUAL_EQUAL, EXCLAMATIONS_EQUAL, SLASH_SLASH, SLASH_ASTERISK
         };
 
         string word;
@@ -27,9 +28,10 @@ class LesAnalyzer
 
         //char current_position;
 
-        Token find_state(list<char>::iterator &it, int *n_lines, map<int, string> saved_symbols) {
+        Token find_state(list<char>::iterator &it, int &n_lines, map<string, int> saved_symbols, map<string, int> saved_words) {
             char ch;
-         
+            this->token_clear();
+
             while (true) {
 
                 ch = *it;
@@ -81,18 +83,29 @@ class LesAnalyzer
                     break;
 
                 case ALPHA:
-                    this->word += ch;
-                    advance(it, this->DASH);
                     char nxt_ch = this->peek(it);
 
                     // Formação de letra com hífen
                     if (nxt_ch == '-') this->state = ALPHA_HYPHEN;
+
+                    // Fim da palavra
+                    else if (nxt_ch == ' ') {
+                        // Formação de palavra reservada
+                        if (this->find_token(saved_words, this->word) != 0) 
+                            this->token_save(ch, saved_words, n_lines);
+                        else
+                            this->token_save(ch, n_lines);
+                        return this->T;
+                    }
 
                     // Quebra de linha
                     else if (nxt_ch == '\n') {
                         n_lines++;
                         advance(it, this->DASH);
                     }
+
+                    this->word += ch;
+                    advance(it, this->DASH);
                     break;
 
                 case DIGIT:
@@ -104,75 +117,45 @@ class LesAnalyzer
                     if (!isdigit(nxt_ch) && nxt_ch != '.' && this->state != DIGIT_FLOAT) this->DIGIT_INT;
                     // Essa parte ta diferente do deles, não entendi o pq do que eles tavam fazendo
                     if (nxt_ch == '\n') {
-                        *n_lines++;
+                        n_lines++;
                         advance(it, this->DASH);
                     }
                     break;
 
                 // NOTAS
-                // Precisa trocar a ordem la no Sintatico de int e string nos map
                 // Está faltando o appearance_qty
                 // ainda n sei como vamos controlá-lo
                 // Falta appearance_qty
                 // check_token_length coloca os valores de length e exceeded_length
+                // Alpha e digit precisam resolver os caracteres invalidos no fim do texto
 
                 case PARENTHESIS_OPEN:
-                    this->word += ch;
-                    this->T.lexeme = this->word;
-                    this->check_token_length();
-                    this->T.token_id = this->find_token(saved_symbols, this->word);
-                    this->T.line_appearance.push_back(*n_lines);
-                    advance(it, this->DASH);
+                    this->token_save(ch, saved_symbols, n_lines);
                     return this->T;
                     break;
 
                 case PARENTHESIS_CLOSE:
-                    this->word += ch;
-                    this->T.lexeme = this->word;
-                    this->check_token_length();
-                    this->T.token_id = this->find_token(saved_symbols, this->word);
-                    this->T.line_appearance.push_back(*n_lines);
-                    advance(it, this->DASH);
+                    this->token_save(ch, saved_symbols, n_lines);
                     return this->T;
                     break;
 
                 case PLUS:
-                    this->word += ch;
-                    this->T.lexeme = this->word;
-                    this->check_token_length();
-                    this->T.token_id = this->find_token(saved_symbols, this->word);
-                    this->T.line_appearance.push_back(n_lines);
-                    advance(it, this->DASH);
+                    this->token_save(ch, saved_symbols, n_lines);
                     return this->T;
                     break;
 
                 case HYPHEN:
-                    this->word += ch;
-                    this->T.lexeme = this->word;
-                    this->check_token_length();
-                    this->T.token_id = this->find_token(saved_symbols, this->word);
-                    this->T.line_appearance.push_back(n_lines);
-                    advance(it, this->DASH);
+                    this->token_save(ch, saved_symbols, n_lines);
                     return this->T;
                     break;
 
                 case AMPERSAND:
-                    this->word += ch;
-                    this->T.lexeme = this->word;
-                    this->check_token_length();
-                    this->T.token_id = this->find_token(saved_symbols, this->word);
-                    this->T.line_appearance.push_back(n_lines);
-                    advance(it, this->DASH);
+                    this->token_save(ch, saved_symbols, n_lines);
                     return this->T;
                     break;
 
                 case OLD_LADY_GAME:
-                    this->word += ch;
-                    this->T.lexeme = this->word;
-                    this->check_token_length();
-                    this->T.token_id = this->find_token(saved_symbols, this->word);
-                    this->T.line_appearance.push_back(n_lines);
-                    advance(it, this->DASH);
+                    this->token_save(ch, saved_symbols, n_lines);
                     return this->T;
                     break;
 
@@ -180,11 +163,7 @@ class LesAnalyzer
                     char nxt_ch = this->peek(it);
                     if (nxt_ch == '=') this->state == LES_EQUAL_THAN;
                     else {
-                        this->word += ch;
-                        this->T.lexeme = this->word;
-                        this->check_token_length();
-                        this->T.token_id = this->find_token(saved_symbols, this->word);
-                        this->T.line_appearance.push_back(n_lines);
+                        this->token_save(ch, saved_symbols, n_lines);
                         advance(it, this->DASH);
                         return this->T;
                     }
@@ -195,11 +174,7 @@ class LesAnalyzer
                     char nxt_ch = this->peek(it);
                     if (nxt_ch == '=') this->state == BIGGER_EQUAL_THAN;
                     else {
-                        this->word += ch;
-                        this->T.lexeme = this->word;
-                        this->check_token_length();
-                        this->T.token_id = this->find_token(saved_symbols, this->word);
-                        this->T.line_appearance.push_back(n_lines);
+                        this->token_save(ch, saved_symbols, n_lines);
                         advance(it, this->DASH);
                         return this->T;
                     }
@@ -209,11 +184,7 @@ class LesAnalyzer
                     char nxt_ch = this->peek(it);
                     if (nxt_ch == '=') this->state == EQUAL_EQUAL;
                     else {
-                        this->word += ch;
-                        this->T.lexeme = this->word;
-                        this->check_token_length();
-                        this->T.token_id = this->find_token(saved_symbols, this->word);
-                        this->T.line_appearance.push_back(n_lines);
+                        this->token_save(ch, saved_symbols, n_lines);
                         advance(it, this->DASH);
                         return this->T;
                     }
@@ -223,58 +194,133 @@ class LesAnalyzer
                     char nxt_ch = this->peek(it);
                     if (nxt_ch == '=') this->state == EXCLAMATION_EQUAL;
                     else {
-                        this->word += ch;
-                        this->T.lexeme = this->word;
-                        this->check_token_length();
-                        this->T.token_id = this->find_token(saved_symbols, this->word);
-                        this->T.line_appearance.push_back(n_lines);
+                        this->token_save(ch, saved_symbols, n_lines);
                         advance(it, this->DASH);
                         return this->T;
                     }
                     break;
 
                 case SEMI_COLON:
-
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
                     break;
 
                 case COMMA:
-
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
                     break;
 
                 case BRACKETS_OPEN:
-
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
                     break;
 
                 case BRACKETS_CLOSE:
-
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
                     break;
 
                 case CURLY_BRACKETS_OPEN:
-
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
                     break;
 
                 case CURLY_BRACKETS_CLOSED:
-
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
                     break;
 
                 case PERCENT:
-
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
                     break;
 
+                // fazer asterisco barra / fim de comentário
                 case ASTERISK:
-
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
                     break;
 
                 case PIPE:
-
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
                     break;
 
                 case SLASH:
-
+                    char nxt_ch = this->peek(it);
+                    if (nxt_ch == '/') this->state == SLASH_SLASH;
+                    else if (nxt_ch == '*') this->state == SLASH_ASTERISK;
+                    else {
+                        this->token_save(ch, saved_symbols, n_lines);
+                        return this->T;
+                    }
                     break;
 
                 case UNDERSCORE:
+                    this->token_save(ch, saved_symbols, n_lines);
+                    return this->T;
+                    break;
 
+                case ALPHA_HYPHEN:
+                    
+                    break;
+
+                case DIGIT_FLOAT:
+
+                    break;
+
+                case DIGIT_INT:
+
+                    break;
+
+                case LES_EQUAL_THAN:
+
+                    break;
+
+                case BIGGER_EQUAL_THAN:
+
+                    break;
+
+                case EQUAL_EQUAL:
+
+                    break;
+
+                case EXCLAMATIONS_EQUAL:
+
+                    break;
+
+                case SLASH_SLASH:
+                    advance(it, this->DASH);
+                    char nxt_ch = this->peek(it);
+                    if (nxt_ch == '\n') {
+                        advance(it, this->DASH);
+                        this->state = INITIAL;
+                    }
+                    else this->state = SLASH_SLASH;
+                    break;
+
+                // Se possível melhorar este trecho 
+                case SLASH_ASTERISK:
+                    advance(it, this->DASH);
+                    char nxt_ch = this->peek(it);
+                    if (nxt_ch == '*') {
+                        advance(it, this->DASH);
+                        char nxt_ch = this->peek(it);
+                        if (nxt_ch == '/') {
+                            advance(it, this->DASH);
+                            this->state = INITIAL;
+                        }
+                        else if (nxt_ch == '\n') {
+                            n_lines++;
+                            this->state = SLASH_ASTERISK;
+                        }
+                        else this->state = SLASH_ASTERISK;
+                    }
+                    else if (nxt_ch == '\n') { 
+                        n_lines++;
+                        this->state = SLASH_ASTERISK;
+                    }
+                    else this->state = SLASH_ASTERISK;
                     break;
 
                 default:
@@ -282,11 +328,27 @@ class LesAnalyzer
                 }
 
             }
-         this->token_clear();
-
+        
         }
 
     private:
+
+        void token_save(char ch, map<string, int> saved_symbols, int n) {
+            this->word += ch;
+            this->T.lexeme = this->word;
+            this->check_token_length();
+            this->T.token_id = this->find_token(saved_symbols, this->word);
+            this->T.line_appearance.push_back(n);
+        }
+
+        void token_save(char ch, int n) {
+            this->word += ch;
+            this->T.lexeme = this->word;
+            this->check_token_length();
+            // Token id para um nome de variável
+            this->T.token_id = 0;
+            this->T.line_appearance.push_back(n);
+        }
 
         void token_clear() {
             this->word.clear();
@@ -324,7 +386,7 @@ class LesAnalyzer
             return *dupe;
         }
 
-        char find_token(map<string, int> saved_symbols, string to_find) {
+        int find_token(map<string, int> saved_symbols, string to_find) {
             map<string, int>::iterator it;
             it = saved_symbols.find(to_find);
             if (it != saved_symbols.end()) {
@@ -332,8 +394,6 @@ class LesAnalyzer
             }
             return 0;
         }
-
- 
 
     //LesAnalyzer();
     //~LesAnalyzer();
