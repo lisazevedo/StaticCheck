@@ -331,7 +331,7 @@ class LesAnalyzer
                 case SLASH_SLASH:
                     advance(it, this->DASH);
                     nxt_ch = this->peek(it);
-                    if (nxt_ch == '\n') {
+                    if (nxt_ch == '\n' || nxt_ch == '@') {
                         advance(it, this->DASH);
                         this->state = INITIAL;
                     }
@@ -353,11 +353,19 @@ class LesAnalyzer
                             n_lines++;
                             this->state = SLASH_ASTERISK;
                         }
+                        else if (nxt_ch == '@') {
+                            this->state = INITIAL; 
+                            advance(it, this->DASH);
+                        }
                         else this->state = SLASH_ASTERISK;
                     }
                     else if (nxt_ch == '\n') { 
                         n_lines++;
                         this->state = SLASH_ASTERISK;
+                    }
+                    else if (nxt_ch == '@') {
+                        this->state = INITIAL;
+                        advance(it, this->DASH);
                     }
                     else this->state = SLASH_ASTERISK;
                     break;
@@ -440,9 +448,5 @@ class LesAnalyzer
             return *dupe;
         }
 
-
-
-    //LesAnalyzer();
-    //~LesAnalyzer();
 };
 

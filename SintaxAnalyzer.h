@@ -71,6 +71,7 @@ class SintaxAnalyzer
                             this->buf.push_back(toupper(ch));
                         }
                     }
+                    
                     this->buf.push_back('@');
                     file.close();
                 }
