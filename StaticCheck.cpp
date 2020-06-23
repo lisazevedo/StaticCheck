@@ -18,10 +18,10 @@ using namespace std;
 
 int main()
 {   
-	SintaxAnalyzer Sa;
-
-	Sa.program();
-  
+	SintaxAnalyzer sa;
+	
+	sa.program();
+	return 0;
 }
 
 // Executar programa: Ctrl + F5 ou Menu Depurar > Iniciar Sem Depuração

@@ -17,12 +17,12 @@ public:
 		this->extension = ".LEX";
 	}
 
-	void write() {
+	void write(string file_name, string path, list<Token> T) {
 		
-		this->T;
-
-		ofstream file(this->file_name+this->extension);
-		cout << this->file_name;
+		
+		string extension = ".LEX";
+		ofstream file(file_name+extension);
+		cout << file_name;
 		//printf("%s%s", &this->file_name, &this->path);
 		//file.open(this->file_name+this->path);
 		file << "Arquivo de relatório de análise léxica\n";

@@ -11,6 +11,6 @@ class StreamWriter
 		string extension;
 
 		
-		//void write();
+		void write();
 };
 

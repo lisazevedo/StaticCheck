@@ -1,6 +1,5 @@
 #pragma once
 #include "StreamReader.h"
-#include "StreamWriter.h"
 #include "LesAnalyzer.h"
 #include "SymbolTab.h"
 #include <list>
@@ -12,8 +11,6 @@ using namespace std;
 class SintaxAnalyzer
 {
 	public:
-		StreamWriter writer_les;
-		StreamWriter writer_sintax;
 		LesAnalyzer les;
 
 		map<string, int> saved_words;
@@ -24,7 +21,7 @@ class SintaxAnalyzer
         string path;
 
         list<char> buf;
-
+        list<Token> tokens;
         int n_lines;
 
         void program() {
@@ -38,14 +35,57 @@ class SintaxAnalyzer
             //cin >> input;
 
             read(input);
-            for (char i : this->buf) { cout << i; }
+            //for (char i : this->buf) { cout << i; }
 
             list<char>::iterator it = this->buf.begin();
-            while (*it != '@'){
+            while (1){
                 token = this->les.find_state(it, this->n_lines, this->saved_symbols, this->saved_words);
                 cout << "Lexeme: " << token.lexeme << endl;
-                if(!token.last) advance(it, 1);
+                this->tokens.push_back(token);
+
+                if (!token.last) advance(it, 1);
+                else {
+                    break;
+                }
             }
+            this->eraseSubStr();
+            this->streamWriterLES();
+
+        }
+
+        void eraseSubStr(){
+            string toErase = ".201";
+            // Search for the substring in string
+            size_t pos = this->file_name.find(toErase);
+            if (pos != std::string::npos){
+                // If found then erase it from string
+                this->file_name.erase(pos, toErase.length());
+            }
+        }
+
+        void streamWriterLES() {
+            string extension = ".LEX";
+            ofstream file(this->path + "\\" + this->file_name + extension);
+            cout << this->path + "\\" + this->file_name + extension << endl;
+            //printf("%s%s", &this->file_name, &this->path);
+            //file.open(this->file_name+this->path);
+            file << "Arquivo de relatório de análise léxica\n";
+            file << "Equipe E02 - Magenta\n";
+            file << "Integrantes:\n\n";
+            file << "->Alfonso Carlos Paes Martinez Junior\t TEL: (71) 9 8180-0054\t EMAIL: engmartinez00@gmail.com\n";
+            file << "->Lis da Silva Azevedo\t\t\t TEL: (71) 9 9214-2580\t EMAIL: lisazevedo3@gmail.com\n";
+            file << "->Leonardo de Andrade Santana\t\t TEL: (71) 9 9407-5108\t EMAIL: devleonardoandrade@gmail.com\n";
+            file << "->Daniel Campos Tavares Gomes\t\t TEL: (71) 9 9730-7988\t EMAIL: daniel.tavares.3096@gmail.com\n\n";
+            file << "Lexeme\t| Id\t| IndiceTabelaSimbolos\n";
+            file << "__________________________________________\n";
+            int count = 0;
+
+            for (Token& i : this->tokens) {
+                file << i.lexeme + " \t| " + to_string(count) + " \t| " + to_string(i.token_id) + "\n";
+                count++;
+            }
+
+            file.close();
         }
 
         void read(string input) { 
@@ -71,7 +111,6 @@ class SintaxAnalyzer
                             this->buf.push_back(toupper(ch));
                         }
                     }
-                    
                     this->buf.push_back('@');
                     file.close();
                 }
@@ -82,13 +121,6 @@ class SintaxAnalyzer
 
         }
     private:
-		void save_tab() {
-
-		}
-
-		void call_les() {
-
-		}
 
         bool is_c_valid(char c) {
             string s(1, c);

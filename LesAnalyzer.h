@@ -274,6 +274,7 @@ class LesAnalyzer
                     break;
 
                 case SLASH:
+                    
                     nxt_ch = this->peek(it);
                     if (nxt_ch == '/') this->state = SLASH_SLASH;
                     else if (nxt_ch == '*') this->state = SLASH_ASTERISK;
@@ -331,8 +332,11 @@ class LesAnalyzer
                 case SLASH_SLASH:
                     advance(it, this->DASH);
                     nxt_ch = this->peek(it);
-                    if (nxt_ch == '\n' || nxt_ch == '@') {
+                    if (nxt_ch == '\n' ) {
                         advance(it, this->DASH);
+                        this->state = INITIAL;
+                    }
+                    else if (nxt_ch == '@') {
                         this->state = INITIAL;
                     }
                     else this->state = SLASH_SLASH;
@@ -347,6 +351,7 @@ class LesAnalyzer
                         nxt_ch = this->peek(it);
                         if (nxt_ch == '/') {
                             advance(it, this->DASH);
+                            advance(it, this->DASH);
                             this->state = INITIAL;
                         }
                         else if (nxt_ch == '\n') {
@@ -355,6 +360,7 @@ class LesAnalyzer
                         }
                         else if (nxt_ch == '@') {
                             this->state = INITIAL; 
+                            advance(it, this->DASH);
                             advance(it, this->DASH);
                         }
                         else this->state = SLASH_ASTERISK;
@@ -365,6 +371,7 @@ class LesAnalyzer
                     }
                     else if (nxt_ch == '@') {
                         this->state = INITIAL;
+                        advance(it, this->DASH);
                         advance(it, this->DASH);
                     }
                     else this->state = SLASH_ASTERISK;
