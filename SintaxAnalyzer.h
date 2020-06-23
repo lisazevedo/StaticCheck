@@ -22,17 +22,18 @@ class SintaxAnalyzer
 
         list<char> buf;
         list<Token> tokens;
+        list<Token> auxTokenList;
         int n_lines;
 
         void program() {
-            string input = "A:\\Repo\\testes\\test2";
+            string input;
             Token token;
             this->fill_saved_symbols();
             this->fill_saved_types();
             this->fill_saved_words();
 
             cout << "Digite o path: ";
-            //cin >> input;
+            cin >> input;
 
             read(input);
             //for (char i : this->buf) { cout << i; }
@@ -49,6 +50,7 @@ class SintaxAnalyzer
                 }
             }
             this->eraseSubStr();
+            this->streamWriterTAB();
             this->streamWriterLES();
 
         }
@@ -80,12 +82,38 @@ class SintaxAnalyzer
             file << "__________________________________________\n";
             int count = 0;
 
-            for (Token& i : this->tokens) {
-                file << i.lexeme + " \t| " + to_string(count) + " \t| " + to_string(i.token_id) + "\n";
+            for (Token& i : this->auxTokenList) {
+                file << i.lexeme + " \t| " + to_string(i.token_id) + " \t| " + to_string(i.IdSymbolTab) + "\n";
                 count++;
             }
 
             file.close();
+        }
+
+        void streamWriterTAB() {
+            string extension = ".TAB";
+            ofstream file(this->path + "\\" + this->file_name + extension);
+            cout << this->path + "\\" + this->file_name + extension << endl;
+
+            file << "Arquivo de relatório da tabela de símbolos\n";
+            file << "Equipe E02 - Magenta\n\n";
+
+            file << "Id\t| Lexeme\t| Código\t|  Tamanho antes de truncar\t| Tamanho depois de truncar\t| Linhas aparecidas\n\n";
+            file << "___________________________________________________________________________________________________________\n";
+            int count = 0;
+            
+            for (Token& i : this->tokens) {
+                file << to_string(count) + " \t| " + i.lexeme + " \t| " + to_string(i.token_id) +"\t|" + to_string(i.exceeded_length) + "\t| " 
+                    + to_string(i.length) +"\t| " + to_string(i.line_appearance.size()) +"\n";
+                
+                if (i.token_id != 0) {
+                    i.IdSymbolTab = count;
+                    auxTokenList.push_back(i);
+                }
+                count++;
+            }
+            file.close();
+
         }
 
         void read(string input) { 

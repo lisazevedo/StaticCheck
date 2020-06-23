@@ -97,7 +97,9 @@ class LesAnalyzer
                     }
                     else if (!isalnum(nxt_ch)) {
                         // Formação de palavra reservada
-                        if (this->find_token(saved_words, this->word) != 0)
+                        string aux2 = this->word + ch;
+
+                        if (this->find_token(saved_words, aux2) != 0)
                             this->token_save(ch, saved_words, n_lines);
                         else
                             this->token_save(ch, n_lines);
@@ -389,6 +391,7 @@ class LesAnalyzer
         int find_token(map<string, int> saved_symbols, string to_find) {
             map<string, int>::iterator it;
             it = saved_symbols.find(to_find);
+
             if (it != saved_symbols.end()) {
                 return (*it).second;
             }

@@ -14,6 +14,7 @@ class Token
 		char ch;
 		bool last = false;
 		string lexeme;
+		int IdSymbolTab;
 
 		
 
